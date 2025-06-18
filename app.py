@@ -23,24 +23,29 @@ db = SQLAlchemy(app)
 import click
 
 
-@app.cli.command()  # 注册为命令，可以传入 name 参数来自定义命令
+# @app.cli.command()  # 注册为命令，可以传入 name 参数来自定义命令
+# @click.option('--drop', is_flag=True, help='Create after drop.')  # 设置选项
+# def initdb(drop):
+#     """Initialize the database."""
+#     if drop:  # 判断是否输入了选项
+#         db.drop_all()
+#     db.create_all()
+#     click.echo('Initialized database.')  # 输出提示信息
+# import click
+
+
+
+@app.cli.command()
 @click.option('--drop', is_flag=True, help='Create after drop.')  # 设置选项
-def initdb(drop):
+def forge(drop):
+    """Generate fake data."""
     """Initialize the database."""
     if drop:  # 判断是否输入了选项
         db.drop_all()
     db.create_all()
-    click.echo('Initialized database.')  # 输出提示信息
-import click
-
-
-@app.cli.command()
-def forge():
-    """Generate fake data."""
-    db.create_all()
 
     # 全局的两个变量移动到这个函数内
-    name = 'Grey Li'
+    name = 'Dkj'
     movies = [
         {'title': 'My Neighbor Totoro', 'year': '1988'},
         {'title': 'Dead Poets Society', 'year': '1989'},
@@ -100,8 +105,18 @@ def test_url_for():
     return 'Test page'
 
 
+@app.context_processor
+def inject_user():
+    user = User.query.first()
+    return dict(user=user)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
 @app.route('/')
 def index():
-    user = User.query.first()  # 读取用户记录
-    movies = Movie.query.all()  # 读取所有电影记录
-    return render_template('index.html', user=user, movies=movies)
+    movies = Movie.query.all()
+    return render_template('index.html', movies=movies)
