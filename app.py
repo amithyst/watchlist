@@ -82,7 +82,7 @@ def forge(drop):
     db.create_all()
 
     # 全局的两个变量移动到这个函数内
-    name = 'Dkj'
+    # name = 'Dkj'
     movies = [
         {'title': 'My Neighbor Totoro', 'year': '1988'},
         {'title': 'Dead Poets Society', 'year': '1989'},
@@ -96,8 +96,8 @@ def forge(drop):
         {'title': 'The Pork of Music', 'year': '2012'},
     ]
 
-    user = User(name=name)
-    db.session.add(user)
+    # user = User(name=name)
+    # db.session.add(user)
     for m in movies:
         movie = Movie(title=m['title'], year=m['year'])
         db.session.add(movie)
